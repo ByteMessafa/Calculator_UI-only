@@ -1,3 +1,4 @@
+import 'package:calculator/function.dart';
 import 'package:calculator/ui/style.dart';
 import 'package:calculator/widgets/nbr_button.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,58 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool darkMode = false;
+  late double resultDoubl;
+  late int resultInt;
+  String helpResult = "";
+  String nbr1 = "";
+  late double nbr11;
+  String nbr2 = "";
+  setNbr2(String reset) {
+    nbr2 = reset;
+  }
+
+  late double nbr22;
+  String opiration = "";
+  late String hisoka;
+  Equal(double nbr1, String op, double nbr2) {
+    switch (op) {
+      case "+":
+        return nbr1 + nbr2;
+
+      case "-":
+        return nbr1 - nbr2;
+
+      case "÷":
+        if (nbr22 != 0) {
+          return nbr1 / nbr2;
+        } else {
+          alart("Can't divide by zero");
+          setNbr2("");
+          return "";
+        }
+
+      case "×":
+        return nbr1 * nbr2;
+      case "":
+        return nbr1;
+    }
+  }
+
+  alart(String msg) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: getColorPrimary(!darkMode),
+        content: Text(
+          msg,
+          style: TextStyle(color: getColorPrimary(darkMode)),
+        ),
+      ),
+    );
+    Future.delayed(Duration(milliseconds: 1200), () {
+      Navigator.of(context).pop();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "54",
+                            "${helpResult}", //==========================================================================
                             textAlign: TextAlign.end,
                             style: TextStyle(
                               color: getColorPrimary(!darkMode),
@@ -86,11 +139,29 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          "35+25-6",
+                          "${nbr1}",
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             color: getColorPrimary(!darkMode),
-                            fontSize: 24,
+                            fontSize: 36,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        Text(
+                          "${opiration}",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: getTheColorOfEqualButton(darkMode),
+                            fontSize: 36,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        Text(
+                          "${nbr2}",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: getColorPrimary(!darkMode),
+                            fontSize: 36,
                             decoration: TextDecoration.none,
                           ),
                         ),
@@ -190,7 +261,14 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                nbr1 = "";
+                                nbr2 = "";
+                                opiration = "";
+                                helpResult = "";
+                              });
+                            },
                             child: NbrButten(
                               nbr: "C",
                               size: 30.0,
@@ -217,7 +295,35 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (nbr1 == "") {
+                                    if (helpResult == "") {
+                                      alart("Invalid format used");
+                                    } else {
+                                      nbr1 = helpResult;
+                                      opiration = "÷";
+                                    }
+                                  } else {
+                                    if (nbr2 == "") {
+                                      opiration = "÷";
+                                    } else {
+                                      nbr11 = double.parse(nbr1);
+                                      nbr22 = double.parse(nbr2);
+                                      helpResult = fixDisplay(
+                                          Equal(nbr11, opiration, nbr22)
+                                              .toString());
+                                      nbr1 = helpResult;
+                                      opiration = "÷";
+                                      nbr2 = "";
+                                    }
+                                  }
+
+                                  // opiration = "÷";
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "÷",
                               size: 45.0,
@@ -231,7 +337,25 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "7";
+                                    } else {
+                                      nbr1 = "7";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "7";
+                                    } else {
+                                      nbr2 = "7";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "7",
                               size: 30.0,
@@ -240,7 +364,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "8";
+                                    } else {
+                                      nbr1 = "8";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "8";
+                                    } else {
+                                      nbr2 = "8";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "8",
                               size: 30.0,
@@ -249,7 +391,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "9";
+                                    } else {
+                                      nbr1 = "9";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "9";
+                                    } else {
+                                      nbr2 = "9";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "9",
                               size: 30.0,
@@ -258,7 +418,33 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (nbr1 == "") {
+                                    if (helpResult == "") {
+                                      alart("Invalid format used");
+                                    } else {
+                                      nbr1 = helpResult;
+                                      opiration = "×";
+                                    }
+                                  } else {
+                                    if (nbr2 == "") {
+                                      opiration = "×";
+                                    } else {
+                                      nbr11 = double.parse(nbr1);
+                                      nbr22 = double.parse(nbr2);
+                                      helpResult = fixDisplay(
+                                          Equal(nbr11, opiration, nbr22)
+                                              .toString());
+                                      nbr1 = helpResult;
+                                      opiration = "×";
+                                      nbr2 = "";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "×",
                               size: 45.0,
@@ -272,7 +458,25 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "4";
+                                    } else {
+                                      nbr1 = "4";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "4";
+                                    } else {
+                                      nbr2 = "4";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "4",
                               size: 30.0,
@@ -281,7 +485,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "5";
+                                    } else {
+                                      nbr1 = "5";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "5";
+                                    } else {
+                                      nbr2 = "5";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "5",
                               size: 30.0,
@@ -290,7 +512,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "6";
+                                    } else {
+                                      nbr1 = "6";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "6";
+                                    } else {
+                                      nbr2 = "6";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "6",
                               size: 30.0,
@@ -299,7 +539,33 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (nbr1 == "") {
+                                    if (helpResult == "") {
+                                      alart("Invalid format used");
+                                    } else {
+                                      nbr1 = helpResult;
+                                      opiration = "-";
+                                    }
+                                  } else {
+                                    if (nbr2 == "") {
+                                      opiration = "-";
+                                    } else {
+                                      nbr11 = double.parse(nbr1);
+                                      nbr22 = double.parse(nbr2);
+                                      helpResult = fixDisplay(
+                                          Equal(nbr11, opiration, nbr22)
+                                              .toString());
+                                      nbr1 = helpResult;
+                                      opiration = "-";
+                                      nbr2 = "";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "-",
                               size: 45.0,
@@ -313,7 +579,25 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "1";
+                                    } else {
+                                      nbr1 = "1";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "1";
+                                    } else {
+                                      nbr2 = "1";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "1",
                               size: 30.0,
@@ -322,7 +606,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "2";
+                                    } else {
+                                      nbr1 = "2";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "2";
+                                    } else {
+                                      nbr2 = "2";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "2",
                               size: 30.0,
@@ -331,7 +633,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "3";
+                                    } else {
+                                      nbr1 = "3";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "3";
+                                    } else {
+                                      nbr2 = "3";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "3",
                               size: 30.0,
@@ -340,7 +660,33 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (nbr1 == "") {
+                                    if (helpResult == "") {
+                                      alart("Invalid format used");
+                                    } else {
+                                      nbr1 = helpResult;
+                                      opiration = "+";
+                                    }
+                                  } else {
+                                    if (nbr2 == "") {
+                                      opiration = "+";
+                                    } else {
+                                      nbr11 = double.parse(nbr1);
+                                      nbr22 = double.parse(nbr2);
+                                      helpResult = fixDisplay(
+                                          Equal(nbr11, opiration, nbr22)
+                                              .toString());
+                                      nbr1 = helpResult;
+                                      opiration = "+";
+                                      nbr2 = "";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "+",
                               size: 45.0,
@@ -363,7 +709,21 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(
+                                () {
+                                  if (opiration == "") {
+                                    if (nbr1 != "0") {
+                                      nbr1 += "0";
+                                    }
+                                  } else {
+                                    if (nbr2 != "0") {
+                                      nbr2 += "0";
+                                    }
+                                  }
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "0",
                               size: 30.0,
@@ -372,7 +732,27 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                if (opiration == "") {
+                                  if (nbr1 == "") {
+                                    nbr1 = "0.";
+                                  } else {
+                                    if (!nbr1.contains(".")) {
+                                      nbr1 += ".";
+                                    }
+                                  }
+                                } else {
+                                  if (nbr2 == "") {
+                                    nbr2 = "0.";
+                                  } else {
+                                    if (!nbr2.contains(".")) {
+                                      nbr2 += ".";
+                                    }
+                                  }
+                                }
+                              });
+                            },
                             child: NbrButten(
                               nbr: ".",
                               size: 30.0,
@@ -381,7 +761,21 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            //=========================================================================================================
+                            onTap: () {
+                              setState(
+                                () {
+                                  nbr11 = double.parse(nbr1);
+                                  nbr22 = double.parse(nbr2);
+                                  helpResult = fixDisplay(
+                                      Equal(nbr11, opiration, nbr22)
+                                          .toString());
+                                  nbr1 = "";
+                                  nbr2 = "";
+                                  opiration = "";
+                                },
+                              );
+                            },
                             child: NbrButten(
                               nbr: "=",
                               size: 45.0,
